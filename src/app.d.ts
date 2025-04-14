@@ -12,7 +12,7 @@ declare global {
 
 	interface User {
 		email: string;
-		password?: string;
+		password: string;
 		name: string;
 		phone: string;
 		rsvp: string;

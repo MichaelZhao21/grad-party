@@ -1,6 +1,11 @@
 <script lang="ts">
 	import B from '$lib/components/B.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import ColorDummy from '$lib/components/ColorDummy.svelte';
+	import Radio from '$lib/components/Radio.svelte';
 	import Text from '$lib/components/Text.svelte';
+	import TextAreaInput from '$lib/components/TextAreaInput.svelte';
+	import TextInput from '$lib/components/TextInput.svelte';
 	import Title from '$lib/components/Title.svelte';
 
 	const rsvpMap = {
@@ -9,7 +14,9 @@
 		maybe: 'Maybe...'
 	};
 
-	let { loggedIn, user, attendees }: IndexProps = $props();
+	let { data } = $props();
+	let { loggedIn, user, attendees }: IndexProps = data;
+
 	let form = $state<User>({
 		email: user?.email || '',
 		password: '',
@@ -80,7 +87,7 @@
 	>
 		<!-- Header section -->
 		<div class="flex w-full flex-col-reverse lg:flex-row">
-			<div class="grwo flex basis-1/2 flex-col px-4 lg:pl-6">
+			<div class="flex grow basis-1/2 flex-col px-4 lg:pl-6">
 				<Title className="text-6xl mt-6 text-center hidden lg:block">Michael's Grad Party!</Title>
 				<Text>
 					IM GRADUATING!!! And that means it’s time for one last party :D If you’ve been to any of
@@ -124,5 +131,135 @@
 				Michael's Grad Party!
 			</Title>
 		</div>
+
+		<!-- Login -->
+		{#if !loggedIn}
+			<div class="mx-6 mb-6 lg:mb-8">
+				<Title>Sign Up/Log In</Title>
+				<div class="mb-4 flex w-full flex-col lg:flex-row">
+					<TextInput
+						bind:value={form.email}
+						label="Email"
+						placeholder="Full email"
+						className="lg:mr-8"
+					/>
+					<TextInput
+						bind:value={form.password}
+						label="Password"
+						placeholder="Password"
+						className="lg:ml-8"
+						password
+					/>
+				</div>
+				<Button onClick={logIn}>Submit</Button>
+			</div>
+		{/if}
+
+		<!-- RSVP Form -->
+		{#if loggedIn}
+			<div class="mx-6 mb-6 lg:mb-8">
+				<Title>Your Info</Title>
+				<Text>
+					Fill out your info please! Feel free to save at any time and come back to edit :3
+				</Text>
+				<div class="flex w-full flex-col lg:flex-row">
+					<TextInput
+						bind:value={form.email}
+						label="Email"
+						placeholder="Full email"
+						className="lg:mr-8 mb-4"
+					/>
+					<TextInput
+						bind:value={form.password}
+						label="Password"
+						placeholder="(unchanged)"
+						className="lg:ml-8 mb-4"
+						password
+					/>
+				</div>
+				<Radio
+					bind:value={form.rsvp}
+					label="RSVP Status"
+					options={['yes', 'no', 'maybe']}
+					optionLabels={['Yes!', 'No :(', 'Maybe (change as soon as you know!)']}
+					className="mb-4"
+				/>
+				<div class="flex w-full flex-col lg:flex-row">
+					<TextInput
+						bind:value={form.name}
+						label="Full Name"
+						placeholder="Full name"
+						className="lg:mr-8 mb-4"
+					/>
+					<TextInput
+						bind:value={form.phone}
+						label="Phone Number"
+						placeholder="Phone number"
+						className="lg:ml-8 mb-4"
+					/>
+				</div>
+				<div class="flex w-full flex-col-reverse lg:mb-4 lg:flex-row">
+					<Radio
+						bind:value={form.paid}
+						label="Paid $5? (Zelle 4695690174, Venmo @mikeyz314)"
+						options={['yes', 'no', 'bringing']}
+						optionLabels={['Yes!', 'Not Yet', 'Bringing Drinks/Snacks (notate below)']}
+						className="mb-4 lg:mb-0 lg:basis-1/2"
+					/>
+					<TextInput
+						bind:value={form.relation}
+						label="How do u know me?"
+						placeholder="Friend, friend of friend, etc"
+						className="grow lg:ml-8 mb-4"
+					/>
+				</div>
+				<div class="flex w-full flex-col lg:flex-row">
+					<TextAreaInput
+						bind:value={form.bringing}
+						label="Whatcha bringing? (if you don’t know that’s fine)"
+						placeholder="Leave blank if paying"
+						className="lg:mr-8 mb-4"
+					/>
+					<TextAreaInput
+						bind:value={form.music}
+						label="Music recs (spotify links if possible)"
+						placeholder="Optional but appreciated :D"
+						className="lg:ml-8 mb-4"
+					/>
+				</div>
+				<TextAreaInput
+					bind:value={form.notes}
+					label="Additional Comments"
+					placeholder="Anything else you want to tell me :3"
+					className="mb-4"
+				/>
+				<div class="flex w-full flex-col justify-between lg:flex-row">
+					<Button onClick={save}>Save</Button>
+					<Button
+						onClick={logOut}
+						className="mt-4 lg:mt-0 text-red-400 border-red-400 bg-red-800/50"
+					>
+						Log Out
+					</Button>
+				</div>
+			</div>
+
+			<!-- Attendees -->
+			<div class="mx-6 mb-6 lg:mb-8">
+				<ColorDummy />
+				<Title>Attendees</Title>
+				<Text><B>Here's everyone that has RSVP'ed :D</B></Text>
+				<div class="flex w-full flex-row flex-wrap gap-x-16">
+					{#each attendees || [] as at}
+						<Text className="flex flex-col">
+							<span class="text-xl lg:text-3xl">{at.name}</span>
+							<span class={`text-${at.rsvp} mt-[-0.5rem] lg:mt-0`}>
+								{rsvpMap[at.rsvp]}
+							</span>
+						</Text>
+					{/each}
+				</div>
+			</div>
+		{/if}
 	</div>
 </div>

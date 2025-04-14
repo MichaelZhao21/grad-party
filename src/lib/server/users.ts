@@ -6,8 +6,5 @@ export async function getLoggedInUser(db: Db, token: string): Promise<User | nul
     if (!user) {
         return null;
     }
-
-    delete user.password;
-
     return user;
 }
