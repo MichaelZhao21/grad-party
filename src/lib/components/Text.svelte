@@ -7,7 +7,7 @@
     }
 
     let { className, children }: TextProps = $props();
-    let textClass = 'lg:text-xl text-text font-body mb-4 ' + className;
+    let textClass = 'lg:text-xl font-body mb-4 ' + className;
 </script>
 
 <h1 class={textClass}>

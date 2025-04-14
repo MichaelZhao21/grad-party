@@ -13,3 +13,7 @@
     --font-title: 'Amatic SC', sans-serif;
     --font-body: 'Fuzzy Bubbles', sans-serif;
 }
+
+html {
+    background-color: black;
+}

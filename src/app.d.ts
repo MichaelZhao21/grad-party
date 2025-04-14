@@ -37,6 +37,15 @@ declare global {
 		user?: User
 		attendees?: Attendee[]
 	}
+
+	interface AdminData {
+		loggedIn: boolean;
+		users?: User[];
+	}
+
+	interface AdminLogin {
+		pass: string;
+	}
 }
 
 export { };
