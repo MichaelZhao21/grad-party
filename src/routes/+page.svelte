@@ -204,7 +204,7 @@
 						label="Paid $5? (Zelle 4695690174, Venmo @mikeyz314)"
 						options={['yes', 'no', 'bringing']}
 						optionLabels={['Yes!', 'Not Yet', 'Bringing Drinks/Snacks (notate below)']}
-						className="mb-4 lg:mb-0 lg:basis-1/2"
+						className="mb-4 lg:mb-0 basis-1/2 grow-0"
 					/>
 					<TextInput
 						bind:value={form.relation}
