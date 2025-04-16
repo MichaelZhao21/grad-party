@@ -40,6 +40,10 @@
 		});
 
 		if (!res.ok) {
+			if (res.status === 500) {
+				alert('Server error. Please notify Michael :/');
+				return;
+			}
 			alert('Invalid email or password');
 			return;
 		}

@@ -8,6 +8,10 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
+
+		interface Locals {
+			db: Db;
+		}
 	}
 
 	interface User {

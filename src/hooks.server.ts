@@ -1,11 +1,18 @@
-import { connect } from '$lib/server/mongo';
+import clientPromise from '$lib/server/mongo';
 
-// Connect to MongoDB before starting the server
-connect()
-    .then((): void => {
-        console.log('MongoDB started');
-    })
-    .catch((e) => {
-        console.log('MongoDB failed to start');
-        console.log(e);
-    });
+export async function handle({ event, resolve }) {
+    try {
+        const client = await clientPromise;
+        event.locals.db = client.db('grad'); // or whatever db you want
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+
+        // Handle the error as needed, e.g., return a 500 response
+        return new Response('Internal Server Error', {
+            status: 500,
+            statusText: 'MongoDB connection error',
+        });
+    }
+
+    return resolve(event);
+}

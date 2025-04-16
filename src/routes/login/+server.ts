@@ -1,7 +1,6 @@
-import { getDatabase } from '$lib/server/mongo';
 import { genHash, randomBytes } from '$lib/server/random';
 
-export async function POST({ request, cookies }) {
+export async function POST({ request, cookies, locals }) {
     const body = (await request.json()) as User;
 
     if (!body.email || !body.password) {
@@ -15,17 +14,16 @@ export async function POST({ request, cookies }) {
 
     const email = body.email.toLowerCase();
     const password = body.password;
-    const db = getDatabase();
 
     // Check if user exists
-    const user = await db.collection('users').findOne<User>({ email });
+    const user = await locals.db.collection('users').findOne<User>({ email });
 
     // Generate token
     const token = randomBytes(16);
 
     // If the user exists and no password, simply log the user in
     if (user && !password) {
-        db.collection('users').updateOne({ email }, { $set: { token } });
+        locals.db.collection('users').updateOne({ email }, { $set: { token } });
         cookies.set("token", token, { path: '/' });
         return new Response("", { status: 200 });
     }
@@ -36,7 +34,7 @@ export async function POST({ request, cookies }) {
         const salt = randomBytes(8);
         const hash = genHash(salt, body.password);
 
-        await db.collection('users').insertOne({
+        await locals.db.collection('users').insertOne({
             email,
             password: `${salt}:${hash}`,
             token
@@ -59,7 +57,7 @@ export async function POST({ request, cookies }) {
     }
 
     // Update token
-    await db.collection('users').updateOne({ email }, { $set: { token } });
+    await locals.db.collection('users').updateOne({ email }, { $set: { token } });
     cookies.set("token", token, { path: '/' });
     return new Response("", { status: 200 });
 }

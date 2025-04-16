@@ -1,8 +1,6 @@
-import { getDatabase } from '$lib/server/mongo';
 import { genHash, randomBytes } from '$lib/server/random.js';
 
-export async function POST({ request, cookies }) {
-    const db = getDatabase();
+export async function POST({ request, cookies, locals }) {
     const body = (await request.json()) as User;
     const token = cookies.get("token");
 
@@ -12,7 +10,7 @@ export async function POST({ request, cookies }) {
     }
 
     // Get the user from the database
-    const user = await db.collection("users").findOne<User>({ token });
+    const user = await locals.db.collection("users").findOne<User>({ token });
     if (!user) {
         return new Response("Invalid token", { status: 401 });
     }
@@ -29,7 +27,7 @@ export async function POST({ request, cookies }) {
     }
 
     // Update the user in the database
-    await db.collection("users").updateOne({ token }, { $set: body });
+    await locals.db.collection("users").updateOne({ token }, { $set: body });
 
     // Update the token in the cookies
     cookies.set("token", token, { path: '/' });
