@@ -16,6 +16,7 @@
 
 	let { data } = $props();
 	let { loggedIn, user, attendees }: IndexProps = data;
+	let funny = $state(false);
 
 	let form = $state<User>({
 		email: user?.email || '',
@@ -123,11 +124,16 @@
 				</Text>
 			</div>
 			<div class="flex grow flex-col items-center p-4 pt-0 lg:basis-1/2 lg:p-6 lg:pt-6">
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<img
 					alt="party graphic"
-					src="/graphic.webp"
+					src={funny ? "/graphic.gif" : "/graphic.webp"}
 					width="800"
 					height="800"
+					onmouseenter={() => funny = true}
+					onmouseleave={() => funny = false}
+					onclick={() => funny = !funny}
 					class="drop-shadow-md md:w-1/2 lg:w-full"
 				/>
 			</div>
